@@ -1,3 +1,4 @@
+const { default: mongoose } = require("mongoose");
 const Appointment = require("../models/appointmentModel");
 const Notification = require("../models/notificationModel");
 const User = require("../models/userModel");
@@ -16,6 +17,28 @@ const getallappointments = async (req, res) => {
     return res.send(appointments);
   } catch (error) {
     res.status(500).send("Unable to get apponintments");
+  }
+};
+const addPrescription = async (req, res) => {
+  try {
+    const { appointmentId, prescription } = req.body;
+
+    const updatedAppointment = await Appointment.findByIdAndUpdate(
+      appointmentId,
+      {
+        $push: { prescription },
+      },
+      { new: true, strict: false }
+    );
+
+    if (!updatedAppointment) {
+      return res.status(404).json({ error: "Appointment not found" });
+    }
+
+    return res.status(200).send("Prescription added successfully");
+  } catch (error) {
+    console.error("Error adding prescription:", error);
+    res.status(500).json({ error: "Unable to add prescription" });
   }
 };
 
@@ -91,4 +114,5 @@ module.exports = {
   getallappointments,
   bookappointment,
   completed,
+  addPrescription,
 };

@@ -15,9 +15,11 @@ const getalldoctors = async (req, res) => {
         })
         .populate("userId");
     }
+    true;
 
     return res.send(docs);
   } catch (error) {
+    console.log("🚀 ~ getalldoctors ~ error:", error);
     res.status(500).send("Unable to get doctors");
   }
 };
@@ -50,6 +52,7 @@ const applyfordoctor = async (req, res) => {
 
     return res.status(201).send("Application submitted successfully");
   } catch (error) {
+    console.log("🚀 ~ applyfordoctor ~ error:", error);
     res.status(500).send("Unable to submit application");
   }
 };

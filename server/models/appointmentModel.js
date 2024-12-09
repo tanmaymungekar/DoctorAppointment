@@ -41,10 +41,10 @@ const schema = mongoose.Schema(
       type: String,
       required: false,
     },
-    // prescription: {
-    //   type: String,
-    //   required: false,
-    // },
+    prescription: {
+      type: Array, // Array of prescription objects
+      default: [],
+    },
     status: {
       type: String,
       default: "Pending",

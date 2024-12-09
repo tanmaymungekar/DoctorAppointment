@@ -18,4 +18,10 @@ appointRouter.post(
 
 appointRouter.put("/completed", auth, appointmentController.completed);
 
+appointRouter.post(
+  "/prescriptions",
+  auth,
+  appointmentController.addPrescription
+);
+
 module.exports = appointRouter;

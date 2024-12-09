@@ -10,6 +10,7 @@ import { toast } from "react-hot-toast";
 import jwt_decode from "jwt-decode";
 import axios from "axios";
 import "../styles/user.css";
+import AddPrescription from "../components/Addprescription";
 
 const Appointments = () => {
   const [appointments, setAppointments] = useState([]);
@@ -18,6 +19,11 @@ const Appointments = () => {
   const dispatch = useDispatch();
   const { loading } = useSelector((state) => state.root);
   const { userId } = jwt_decode(localStorage.getItem("token"));
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const handleModal = () => {
+    setModalOpen(true);
+  };
 
   const getAllAppoint = async () => {
     try {
@@ -83,6 +89,28 @@ const Appointments = () => {
     }
   };
 
+  const addPrescription = async (appointmentId, prescriptionData) => {
+    try {
+      const response = await axios.post(
+        "/appointment/prescriptions/",
+        {
+          appointmentId: appointmentId._id,
+          prescription: { content: "somthing something" },
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      toast.success("Prescription added successfully.");
+      return response.data;
+    } catch (error) {
+      console.error("Error adding prescription:", error);
+      toast.error("Failed to add prescription. Please try again.");
+    }
+  };
+
   return (
     <>
       <Navbar />
@@ -108,6 +136,7 @@ const Appointments = () => {
                     <th>Appointment Date</th>
                     <th>Status</th>
                     <th>Actions</th>
+                    <th>Add prescription</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -116,7 +145,7 @@ const Appointments = () => {
                       <td>{(currentPage - 1) * PerPage + index + 1}</td>
                       <td>{`${appointment.doctorId.firstname} ${appointment.doctorId.lastname}`}</td>
                       <td>{`${appointment.userId.firstname} ${appointment.userId.lastname}`}</td>
-                      <td>{appointment.age}</td> 
+                      <td>{appointment.age}</td>
                       <td>{appointment.gender}</td>
                       <td>{appointment.number}</td>
                       <td>{appointment.bloodGroup}</td>
@@ -131,6 +160,28 @@ const Appointments = () => {
                         >
                           Complete
                         </button>
+                      </td>
+                      <td>
+                        <button
+                          className="btn appointment-btn"
+                          onClick={handleModal}
+                        >
+                          {appointment?.prescription?.length > 0
+                            ? "Edit"
+                            : "Add Prescription"}
+                        </button>
+
+                        {modalOpen && (
+                          <AddPrescription
+                            setModalOpen={setModalOpen}
+                            ele={appointment}
+                            allreadyPrescribed={
+                              appointment?.prescription?.length > 0
+                                ? true
+                                : false
+                            }
+                          />
+                        )}
                       </td>
                     </tr>
                   ))}
