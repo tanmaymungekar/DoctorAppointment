@@ -5,17 +5,134 @@ const User = require("../models/userModel");
 
 const getallappointments = async (req, res) => {
   try {
-    const keyword = req.query.search
-      ? {
+
+    let keyword
+    let appointments;
+    if (req.query.search) {
+      keyword = req.query.search
+        ? {
           $or: [{ userId: req.query.search }, { doctorId: req.query.search }],
         }
-      : {};
+        : {};
+      appointments = await Appointment.find(keyword)
+        .populate("doctorId")
+        .populate("userId");
+      // }
 
-    const appointments = await Appointment.find(keyword)
-      .populate("doctorId")
-      .populate("userId");
+    }
+
+    if (req.query.user) {
+
+      console.log("req.query.userId", req.query.user);
+
+      keyword = { userId: mongoose.Types.ObjectId(req.query.user) };
+
+      console.log("asdads",[
+        { $match: keyword }, // Match appointments based on userId
+        {
+          $lookup: {
+            from: "users", // Name of the Doctor collection
+            localField: "doctorId", // Field in Appointment collection
+            foreignField: "_id", // Field in Doctor collection
+            as: "doctorDetails", // Name of the output array
+          },
+        },
+        { 
+          $unwind: {
+            path: "$doctorDetails", // Unwind the doctorDetails array
+            preserveNullAndEmptyArrays: true, // Keep documents without matches
+          },
+        },
+        {
+          $project: {
+            _id: 1,
+            userId: 1,
+            doctorId: 1,
+            date: 1, // Include any additional fields from Appointment
+            time: 1, // Example: appointment time
+            "doctorDetails.firstname": 1,
+            "doctorDetails.lastname": 1,
+            "doctorDetails.email": 1, // Include more fields if needed
+          },
+        },
+      ])
+
+      // Use aggregation pipeline to join the `Doctor` collection
+      appointments = await Appointment.aggregate([
+        { $match: keyword }, // Match appointments based on userId
+        {
+          $lookup: {
+            from: "users", // Name of the Doctor collection
+            localField: "doctorId", // Field in Appointment collection
+            foreignField: "_id", // Field in Doctor collection
+            as: "doctorDetails", // Name of the output array
+          },
+        },
+        {
+          $unwind: {
+            path: "$doctorDetails", // Unwind the doctorDetails array
+            preserveNullAndEmptyArrays: true, // Keep documents without matches
+          },
+        },
+        {
+          $lookup: {
+            from: "doctors", // Join with the 'doctor' collection
+            localField: "doctorDetails._id", // Field in Users collection (_id)
+            foreignField: "userId", // Field in Doctor collection
+            as: "doctorAdvance", // Output array name
+          },
+        },
+        {
+          $unwind: {
+            path: "$doctorAdvance", // Unwind the doctorDetails array
+            preserveNullAndEmptyArrays: true, // Keep documents without matches
+          },
+        },
+        {
+          $project: {
+            _id: 1,
+            userId: 1,
+            doctorId: 1,
+            date:1,
+            time:1,
+            prescription:1,
+            // firstname:1,
+            // lastname:1,
+            "doctorDetails.firstname": 1, // Project only the doctor's first name
+            "doctorDetails._id": 1, // Project only the doctor's first name
+            "doctorDetails.lastname": 1, // Optionally include last name
+            "doctorDetails.email": 1, // Doctor's email from 'users',
+            "doctorAdvance.specialization":1
+          },
+        },
+        // {
+        //   $lookup: {
+        //     from: "doctor", // Name of the Doctor collection
+        //     localField: "doctorId", // Field in Appointment collection
+        //     foreignField: "userId", // Field in Doctor collection
+        //     as: "doctorAdvance", // Name of the output array
+        //   },
+        // },
+      ]);
+
+      console.log("appointments", appointments);
+
+    }
+
+    // else {
+
+    //   console.log("keyword", keyword)
+
+    //   appointments = await Appointment.findById(keyword)
+    //     .populate("doctorId")
+    //     .populate("userId");
+    // }
+
     return res.send(appointments);
+
+
   } catch (error) {
+    console.log("error", error)
     res.status(500).send("Unable to get apponintments");
   }
 };
