@@ -16,10 +16,10 @@ function Login() {
   const [formDetails, setFormDetails] = useState({
     email: "",
     password: "",
-    role: "", 
+    role: "",
   });
   const navigate = useNavigate();
-  const [userRole, setUserRole] = useState(""); 
+  const [userRole, setUserRole] = useState("");
   const inputChange = (e) => {
     const { name, value } = e.target;
     return setFormDetails({
@@ -31,7 +31,7 @@ function Login() {
     try {
       e.preventDefault();
       const { email, password, role } = formDetails;
-  
+
       if (!email || !password) {
         return toast.error("Email and password are required");
       } else if (!role) {
@@ -41,14 +41,14 @@ function Login() {
       } else if (password.length < 5) {
         return toast.error("Password must be at least 5 characters long");
       }
-  
+
       const { data } = await toast.promise(
         axios.post("/user/login", {
           email,
           password,
           role,
         }),
-        
+
         {
           pending: "Logging in...",
           success: "Login successfully",
@@ -56,6 +56,7 @@ function Login() {
           loading: "Logging user...",
         }
       );
+      console.log("🚀 ~ formSubmit ~ data:", data);
       localStorage.setItem("token", data.token);
       dispatch(setUserInfo(jwt_decode(data.token).userId));
       setUserRole(role);
@@ -64,7 +65,6 @@ function Login() {
       return error;
     }
   };
-  
 
   const getUser = async (id, role) => {
     try {
@@ -72,7 +72,7 @@ function Login() {
       dispatch(setUserInfo(temp));
       if (role === "Admin") {
         return navigate("/dashboard/home");
-      } else if (role === "Patient"){
+      } else if (role === "Patient") {
         return navigate("/");
       } else {
         return navigate("/");
@@ -84,7 +84,7 @@ function Login() {
 
   return (
     <>
-      <Navbar  /> 
+      <Navbar />
       <section className="register-section flex-center">
         <div className="register-container flex-center">
           <h2 className="form-heading">Sign In</h2>
@@ -121,11 +121,10 @@ function Login() {
             </button>
           </form>
           <NavLink className="login-link" to={"/forgotpassword"}>
-              Forgot Password
-            </NavLink>
+            Forgot Password
+          </NavLink>
           <p>
             Not a user?{" "}
-            
             <NavLink className="login-link" to={"/register"}>
               Register
             </NavLink>

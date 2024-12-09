@@ -91,9 +91,9 @@ td {
   background-color: green;
 }
 
-
 .form-input,
-textarea,select{
+textarea,
+select {
   margin: -1px 4px;
   font-size: 1rem;
   background-color: rgb(234, 234, 234);
@@ -101,16 +101,15 @@ textarea,select{
   border: none;
   border-radius: 5px;
   font-family: var(--font-family);
-  
 }
-.ayx{
+.ayx {
   display: flex;
   justify-self: flex-end;
 }
 .pagination {
   display: flex;
-  gap: 9px; 
-  justify-content: center; 
+  gap: 9px;
+  justify-content: center;
 }
 
 .pagination button {
@@ -124,6 +123,58 @@ textarea,select{
   background-color: #28d33f;
 }
 
+.prescription-form {
+  background-color: #f4f4f4;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin: 90px auto;
+}
+
+.prescription-form h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.prescription-form .error {
+  color: #dc3545;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.prescription-form label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.prescription-form textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  resize: none;
+  margin-bottom: 10px;
+}
+
+.prescription-form button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  display: block;
+  margin: 0 auto;
+  transition: background-color 0.3s ease;
+}
+
+.prescription-form button:hover {
+  background-color: #0056b3;
+}
 
 @media (max-width: 1126px) {
   .user-section {

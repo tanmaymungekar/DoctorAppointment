@@ -10,6 +10,7 @@ import { Protected, Public, Admin } from "./middleware/route";
 import React, { lazy, Suspense } from "react";
 import Loading from "./components/Loading";
 import Dashboard from "./pages/Dashboard";
+import Priscriptions from "./pages/Priscriptions";
 
 const Aprofile = lazy(() => import("./components/Aprofile"));
 const Home = lazy(() => import("./pages/Home"));
@@ -47,6 +48,14 @@ function App() {
             element={
               <Protected>
                 <Appointments />
+              </Protected>
+            }
+          />
+          <Route
+            path="/priscriptions"
+            element={
+              <Protected>
+                <Priscriptions />
               </Protected>
             }
           />
