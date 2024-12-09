@@ -38,6 +38,8 @@ const getnotdoctors = async (req, res) => {
 
 const applyfordoctor = async (req, res) => {
   try {
+    console.log("🚀 ~ User ID from JWT:", req.locals);
+    console.log("🚀 ~ Form Details:", req.body.formDetails);
     const alreadyFound = await Doctor.findOne({ userId: req.locals });
     if (alreadyFound) {
       return res.status(400).send("Application already exists");

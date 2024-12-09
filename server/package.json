@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server.js"
   },
-  "author": "Tarun Kumar",
+  "author": "Tanmay Mungekar",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.0",
